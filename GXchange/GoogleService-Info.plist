@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1066123394823-cn74bc4ikkunqeen7arskk94g5133rjh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1066123394823-cn74bc4ikkunqeen7arskk94g5133rjh</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDT7FV-QvefoWeDHiTePOjwbobFcvvQAHs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1066123394823</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>co.danabek.GXchange</string>
+	<key>PROJECT_ID</key>
+	<string>gxchange-8d693</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gxchange-8d693.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1066123394823:ios:bd00dd932e5be91d7ccfa2</string>
+	<key>DATABASE_URL</key>
+	<string>https://gxchange-8d693.firebaseio.com</string>
+</dict>
+</plist>
