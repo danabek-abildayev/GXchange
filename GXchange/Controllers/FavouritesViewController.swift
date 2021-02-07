@@ -1,0 +1,97 @@
+//
+//  PSTableViewController.swift
+//  GXchange
+//
+//  Created by Danabek Abildayev on 10/5/20.
+//  Copyright © 2020 macbook. All rights reserved.
+//
+
+import UIKit
+import Firebase
+
+class FavouritesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    let db = Firestore.firestore()
+    private var favouriteGames = [GameModel]()
+    
+    private var cv: UICollectionView!
+    
+    let defaults = UserDefaults.standard
+            
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Favourites"
+        setCollectionView()
+        
+        cv.dataSource = self
+        cv.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        reloadGames()
+    }
+    
+    func setCollectionView() {
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 1
+        layout.itemSize = CGSize(width: view.frame.width - 10, height: view.frame.width/2)
+        
+        cv = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
+        cv.register(GameCell.self, forCellWithReuseIdentifier: GameCell.identifier)
+        cv.backgroundColor = .green
+        
+        view.addSubview(cv)
+    }
+    
+    func reloadGames() {
+        
+        db.collection("psGames").order(by: "game", descending: false).addSnapshotListener { [weak self] (querySnapshot, err) in
+            if let e = err {
+                print("Error getting documents: \(e.localizedDescription)")
+            } else {
+                guard let self = self else {return}
+                self.favouriteGames = []
+                if let snapshotDocuments = querySnapshot?.documents {
+                    for doc in snapshotDocuments {
+                        let data = doc.data()
+                        if let name = data["game"] as? String, let price = data["price"] as? String
+                        {
+                            let isFavourite = self.defaults.bool(forKey: name)
+                            print("\(name) is indicated as \(isFavourite)")
+                            if isFavourite {
+                                let newGame = GameModel(name: name, price: price)
+                                self.favouriteGames.append(newGame)
+                            }
+                            DispatchQueue.main.async {
+                                self.cv.reloadData()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return favouriteGames.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCell.identifier, for: indexPath) as! GameCell
+        
+        cell.name.text = favouriteGames[indexPath.row].name
+        cell.price.text = favouriteGames[indexPath.row].price
+        
+        return cell
+    }
+    
+}

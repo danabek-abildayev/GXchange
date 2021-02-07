@@ -50,54 +50,44 @@ class ProfileViewController: UIViewController {
         gameLabel.text = "GX-CHANGE"
         gameLabel.textColor = .white
         gameLabel.font = .systemFont(ofSize: 50)
-
+        gameLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameLabel)
         
         register.setTitle("Register", for: .normal)
         register.titleLabel?.font = .systemFont(ofSize: 25)
         register.backgroundColor = .systemOrange
- //       register.center = CGPoint(x: view.bounds.midX, y: view.bounds.maxY - 180)
+        register.layer.cornerRadius = 20
         register.addTarget(self, action: #selector(registerPressed), for: .touchUpInside)
+        register.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(register)
         
         login.setTitle("Login", for: .normal)
         login.titleLabel?.font = .systemFont(ofSize: 25)
         login.backgroundColor = .systemOrange
- //       login.center = CGPoint(x: view.bounds.midX, y: view.bounds.maxY - 100)
+        login.layer.cornerRadius = 20
         login.addTarget(self, action: #selector(loginPressed), for: .touchUpInside)
-        
-        let buttonSV = UIStackView(arrangedSubviews: [register, login])
-        buttonSV.axis = .vertical
-        buttonSV.alignment = .center
-        buttonSV.distribution = .equalSpacing
-        buttonSV.spacing = 20
-        buttonSV.translatesAutoresizingMaskIntoConstraints = false
-        
+        login.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(login)
+                
         psnImage.image = UIImage(named: "logo")
         psnImage.center = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
-        
-        let stackView = UIStackView(arrangedSubviews: [gameLabel, psnImage, buttonSV])
-        
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 50
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
+        psnImage.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(psnImage)
         
         NSLayoutConstraint.activate([
-                                     stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-                                     stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-                                     stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                                     register.widthAnchor.constraint(equalToConstant: 110),
-                                     register.heightAnchor.constraint(equalToConstant: 50),
-                                     login.widthAnchor.constraint(equalToConstant: 80),
-                                     login.heightAnchor.constraint(equalToConstant: 45)])
-
+                                        gameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                        gameLabel.centerYAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height/4),
+                                        psnImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                        psnImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                                        register.topAnchor.constraint(equalTo: psnImage.bottomAnchor, constant: view.frame.height/16),
+                                        register.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                        register.widthAnchor.constraint(equalToConstant: 110),
+                                        register.heightAnchor.constraint(equalToConstant: 50),
+                                        login.topAnchor.constraint(equalTo: register.bottomAnchor, constant: view.frame.height/32),
+                                        login.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                        login.widthAnchor.constraint(equalToConstant: 80),
+                                        login.heightAnchor.constraint(equalToConstant: 45)])
         
-//        stackView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-//        stackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-//        stackView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-//        stackView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-
     }
     
 }

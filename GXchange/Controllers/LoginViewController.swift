@@ -33,7 +33,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     print(e.localizedDescription)
                 } else {
                     DispatchQueue.main.async {
-                        let destinationVC = PlatformChooseViewController()
+                        let destinationVC = FavouritesViewController()
                         destinationVC.modalPresentationStyle = .fullScreen
                         self.navigationController?.pushViewController(destinationVC, animated: true)
                     }
@@ -57,7 +57,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         login.returnKeyType = .go
         login.autocapitalizationType = .none
         login.delegate = self
- //       login.center = CGPoint(x: view.bounds.midX, y: 200)
         login.background = UIImage(named: "capsule")
         self.view.addSubview(login)
         
@@ -72,14 +71,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         password.isSecureTextEntry = true
         password.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
         password.delegate = self
-  //      password.center = CGPoint(x: view.bounds.midX, y: 270)
         password.background = UIImage(named: "capsule")
         self.view.addSubview(password)
         
         loginButton.setTitle("Login", for: .normal)
         loginButton.titleLabel?.font = .systemFont(ofSize: 17)
         loginButton.backgroundColor = .systemOrange
-  //      loginButton.center = CGPoint(x: view.bounds.midX, y: 370)
         loginButton.addTarget(self, action: #selector(loginPressed), for: .touchUpInside)
         self.view.addSubview(loginButton)
         

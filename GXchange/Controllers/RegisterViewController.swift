@@ -34,7 +34,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
                 if let e = error {
                     print(e.localizedDescription)
                 } else {
-                    let destinationVC = PlatformChooseViewController()
+                    let destinationVC = FavouritesViewController()
                     destinationVC.modalPresentationStyle = .fullScreen
                     self.navigationController?.pushViewController(destinationVC, animated: true)
                 }

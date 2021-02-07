@@ -21,46 +21,16 @@ class TabBar: UITabBarController {
     
     func setupVCs() {
         
-        let firstVC = UINavigationController(rootViewController: FirstVC())
+        let firstVC = UINavigationController(rootViewController: HomeViewController())
         firstVC.tabBarItem.image = UIImage(systemName: "house")
-        let secondVC = UINavigationController(rootViewController: SecondVC())
+        let secondVC = UINavigationController(rootViewController: FavouritesViewController())
         secondVC.tabBarItem.image = UIImage(systemName: "heart")
+        secondVC.tabBarItem.title = "Favourites"
         let thirdVC = UINavigationController(rootViewController: ProfileViewController())
         thirdVC.tabBarItem.image = UIImage(systemName: "person")
+        thirdVC.tabBarItem.title = "Profile"
         
         setViewControllers([firstVC, secondVC, thirdVC], animated: true)
     }
 
 }
-
-
-class FirstVC : UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .red
-    }
-    
-}
-
-class SecondVC : UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .green
-    }
-    
-}
-
-class ThirdVC : UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .blue
-    }
-    
-}
-
