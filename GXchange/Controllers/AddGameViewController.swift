@@ -49,15 +49,15 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
                 "price" : price.text!,
                 "city" : city.text!,
                 "phone" : phone.text!,
-                "imageData" : imageData!
             ])
-            { err in
+            { [weak self] err in
+                guard let self = self else {return}
                 if let e = err {
                     print("Error adding new game: \(e.localizedDescription)")
                 } else {
                     print("Game added to store successfully!")
                     
-                    self.dismiss(animated: true, completion: nil)
+                    self.navigationController?.popViewController(animated: true)
                 }
             }
         } else {
