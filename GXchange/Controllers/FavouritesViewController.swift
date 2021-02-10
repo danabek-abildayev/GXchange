@@ -63,7 +63,7 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
                             let isFavourite = self.defaults.bool(forKey: name)
                             print("\(name) is indicated as \(isFavourite)")
                             if isFavourite {
-                                let newGame = GameModel(name: name, price: price)
+                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite)
                                 self.favouriteGames.append(newGame)
                             }
                             DispatchQueue.main.async {
@@ -91,7 +91,25 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         cell.name.text = favouriteGames[indexPath.row].name
         cell.price.text = favouriteGames[indexPath.row].price
         
+        cell.favouriteButton.tag = indexPath.row
+        cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
+        
+        if favouriteGames[indexPath.row].isFavourite {
+            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            defaults.setValue(true, forKey: cell.name.text!)
+        } else {
+            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            defaults.setValue(false, forKey: cell.name.text!)
+        }
+        
         return cell
+    }
+    
+    @objc private func heartPressed (sender: UIButton!) {
+        
+        favouriteGames[sender.tag].isFavourite = !favouriteGames[sender.tag].isFavourite
+        
+        cv.reloadData()
     }
     
 }

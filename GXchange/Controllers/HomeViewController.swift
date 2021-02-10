@@ -13,6 +13,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         
     let searchController = UISearchController(searchResultsController: nil)
     
+    let defaults = UserDefaults.standard
+    
     private var collectionView : UICollectionView!
     
     let db = Firestore.firestore()
@@ -59,7 +61,6 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
             present(alert, animated: true)
         }
         
-        
     }
     
     func setSearchBar() {
@@ -81,7 +82,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                         let data = doc.data()
                         if let name = data["game"] as? String, let price = data["price"] as? String
                         {
-                            let newGame = GameModel(name: name, price: price)
+                            let someBoolean = self.defaults.bool(forKey: name)
+                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean)
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
@@ -128,9 +130,29 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         cell.name.text = psGames[indexPath.row].name
         cell.price.text = psGames[indexPath.row].price
         
+        cell.favouriteButton.tag = indexPath.row
+        cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
+        
+        if psGames[indexPath.row].isFavourite {
+            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            defaults.setValue(true, forKey: cell.name.text!)
+            print("\(cell.name.text!) is Favourite")
+        } else {
+            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            defaults.setValue(false, forKey: cell.name.text!)
+            print("\(cell.name.text!) is not favourite")
+        }
+        
         return cell
     }
     
+    
+    @objc private func heartPressed (sender: UIButton!) {
+        
+        psGames[sender.tag].isFavourite = !psGames[sender.tag].isFavourite
+        
+        collectionView.reloadData()
+    }
     
     
     

@@ -12,8 +12,6 @@ class GameCell: UICollectionViewCell {
     
     static let identifier = "GameCell"
     
-    let defaults = UserDefaults.standard
-    
     var gameImage : UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "psn")
@@ -38,20 +36,6 @@ class GameCell: UICollectionViewCell {
     
     let favouriteButton = UIButton()
     
-    var isFavourite = false {
-        didSet {
-            if isFavourite {
-                favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-                defaults.setValue(true, forKey: name.text!)
-                print("\(name.text!) is Favourite")
-            } else {
-                favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-                defaults.setValue(false, forKey: name.text!)
-                print("\(name.text!) is not favourite")
-            }
-        }
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -63,16 +47,10 @@ class GameCell: UICollectionViewCell {
         contentView.clipsToBounds = true
         
         favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-        favouriteButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         contentView.addSubview(favouriteButton)
         
     }
-    
-    @objc func buttonPressed () {
-        isFavourite = !isFavourite
         
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

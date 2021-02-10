@@ -18,6 +18,8 @@ struct GameModel {
     var contactName: String?
     var contactNumber: String?
     var contactAdress: String?
+    var isFavourite : Bool
+    
 //    var image: UIImage
     
 }
