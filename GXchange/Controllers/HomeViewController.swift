@@ -17,6 +17,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     
     private var collectionView : UICollectionView!
     
+    private let refreshControl = UIRefreshControl()
+    
     let db = Firestore.firestore()
     private var psGames = [GameModel]()
     
@@ -35,7 +37,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         reloadGames()
     }
     
-    func setNavBarItems() {
+    private func setNavBarItems() {
         
         let image = UIImageView(image: UIImage(named: "logo"))
         image.contentMode = .scaleAspectFit
@@ -50,7 +52,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         navigationItem.rightBarButtonItem = addItem
     }
     
-    @objc func addGame () {
+    @objc private func addGame () {
         
         if Auth.auth().currentUser != nil {
             let destVC = AddGameViewController()
@@ -63,13 +65,13 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         
     }
     
-    func setSearchBar() {
+    private func setSearchBar() {
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
-    func reloadGames() {
+    private func reloadGames() {
         
         db.collection("psGames").order(by: "game", descending: false).addSnapshotListener { [weak self] (querySnapshot, err) in
             if let e = err {
@@ -114,6 +116,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         collectionView.delegate = self
         collectionView.register(GameCell.self, forCellWithReuseIdentifier: GameCell.identifier)
         collectionView.backgroundColor = .clear
+        collectionView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
         
         collectionView.frame = CGRect(x: 5, y: (navigationController?.navigationBar.frame.height)! + searchController.searchBar.frame.height + 35, width: view.frame.width - 10, height: view.frame.height - (navigationController?.navigationBar.frame.height)! - searchController.searchBar.frame.height - (tabBarController?.tabBar.frame.height)! - 35)
         view.addSubview(collectionView)
@@ -152,6 +156,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         psGames[sender.tag].isFavourite = !psGames[sender.tag].isFavourite
         
         collectionView.reloadData()
+    }
+    
+    @objc private func refreshPage () {
+        reloadGames()
+        refreshControl.endRefreshing()
     }
     
     

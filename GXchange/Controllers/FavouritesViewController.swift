@@ -17,6 +17,8 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
     private var cv: UICollectionView!
     
     let defaults = UserDefaults.standard
+    
+    private let refreshControl = UIRefreshControl()
             
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +34,7 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         reloadGames()
     }
     
-    func setCollectionView() {
+    private func setCollectionView() {
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -43,11 +45,18 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         cv = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
         cv.register(GameCell.self, forCellWithReuseIdentifier: GameCell.identifier)
         cv.backgroundColor = .green
+        cv.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
         
         view.addSubview(cv)
     }
     
-    func reloadGames() {
+    @objc private func refreshPage() {
+        reloadGames()
+        refreshControl.endRefreshing()
+    }
+    
+    private func reloadGames() {
         
         db.collection("psGames").order(by: "game", descending: false).addSnapshotListener { [weak self] (querySnapshot, err) in
             if let e = err {
