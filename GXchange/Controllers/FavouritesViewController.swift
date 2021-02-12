@@ -24,6 +24,8 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         super.viewDidLoad()
         
         title = "Favourites"
+        view.backgroundColor = .green
+//        navigationController?.navigationBar.barTintColor = .green
         setCollectionView()
         
         cv.dataSource = self
@@ -42,9 +44,9 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         layout.minimumInteritemSpacing = 1
         layout.itemSize = CGSize(width: view.frame.width - 10, height: view.frame.width/2)
         
-        cv = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
+        cv = UICollectionView(frame: CGRect(x: 0, y: (navigationController?.navigationBar.frame.height)! + 25, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
         cv.register(FavouriteGameCell.self, forCellWithReuseIdentifier: FavouriteGameCell.identifier)
-        cv.backgroundColor = .green
+        cv.backgroundColor = .clear
         cv.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
         
