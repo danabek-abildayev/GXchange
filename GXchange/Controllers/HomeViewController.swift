@@ -132,7 +132,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCell.identifier, for: indexPath) as! GameCell
         
         cell.name.text = psGames[indexPath.row].name
-        cell.price.text = psGames[indexPath.row].price
+        cell.price.text = "\(psGames[indexPath.row].price) ₸"
         
         cell.favouriteButton.tag = indexPath.row
         cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)

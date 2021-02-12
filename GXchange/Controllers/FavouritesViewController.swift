@@ -43,7 +43,7 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         layout.itemSize = CGSize(width: view.frame.width - 10, height: view.frame.width/2)
         
         cv = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
-        cv.register(GameCell.self, forCellWithReuseIdentifier: GameCell.identifier)
+        cv.register(FavouriteGameCell.self, forCellWithReuseIdentifier: FavouriteGameCell.identifier)
         cv.backgroundColor = .green
         cv.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
@@ -67,12 +67,12 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
                 if let snapshotDocuments = querySnapshot?.documents {
                     for doc in snapshotDocuments {
                         let data = doc.data()
-                        if let name = data["game"] as? String, let price = data["price"] as? String
+                        if let name = data["game"] as? String, let price = data["price"] as? String, let city = data["city"] as? String, let phone = data["phone"] as? String
                         {
                             let isFavourite = self.defaults.bool(forKey: name)
                             print("\(name) is indicated as \(isFavourite)")
                             if isFavourite {
-                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite)
+                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone)
                                 self.favouriteGames.append(newGame)
                             }
                             DispatchQueue.main.async {
@@ -95,10 +95,12 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCell.identifier, for: indexPath) as! GameCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteGameCell.identifier, for: indexPath) as! FavouriteGameCell
         
         cell.name.text = favouriteGames[indexPath.row].name
-        cell.price.text = favouriteGames[indexPath.row].price
+        cell.price.text = "\(favouriteGames[indexPath.row].price) ₸"
+        cell.city.text = "City: \(favouriteGames[indexPath.row].city!)"
+        cell.phone.text = "Tel: \(favouriteGames[indexPath.row].phone!)"
         
         cell.favouriteButton.tag = indexPath.row
         cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
