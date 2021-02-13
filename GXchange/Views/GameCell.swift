@@ -65,7 +65,7 @@ class GameCell: UICollectionViewCell {
     
     func putGameImage (from urlString : String?) {
         if urlString != nil {
-            print("Now downloading image with url \(urlString!)")
+//            print("Now downloading image with url \(urlString!)")
             guard let url = URL(string: urlString!) else {
                 print("Unable to convert urlString from firestore to URL")
                 return

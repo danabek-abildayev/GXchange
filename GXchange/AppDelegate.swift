@@ -20,6 +20,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    func applicationWillTerminate(_ application: UIApplication) {
+        print(#function)
+        let firebaseAuth = Auth.auth()
+        do {
+          try firebaseAuth.signOut()
+            print("The current user was signed out.")
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError.localizedDescription)
+        }
+    }
+    
     // MARK: UISceneSession Lifecycle
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
