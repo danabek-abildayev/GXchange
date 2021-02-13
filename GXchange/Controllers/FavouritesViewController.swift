@@ -78,7 +78,7 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
                             let isFavourite = self.defaults.bool(forKey: name)
                         //    print("\(name) is indicated as \(isFavourite)")
                             if isFavourite {
-                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone)
+                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone, gameImageURL: data["imageURL"] as? String)
                                 self.favouriteGames.append(newGame)
                             }
                             DispatchQueue.main.async {
@@ -107,6 +107,13 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         cell.price.text = "\(favouriteGames[indexPath.row].price) ₸"
         cell.city.text = "City: \(favouriteGames[indexPath.row].city!)"
         cell.phone.text = "Tel: \(favouriteGames[indexPath.row].phone!)"
+        
+        if let safeURL = favouriteGames[indexPath.row].gameImageURL {
+            cell.putGameImage(from: safeURL)
+//            print("\(cell.name.text!) 's URL is \(safeURL)")
+        } else {
+            cell.gameImage.image = UIImage(named: "psn")
+        }
         
         cell.favouriteButton.tag = indexPath.row
         cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)

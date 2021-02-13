@@ -17,21 +17,22 @@ struct GameModel {
     var city: String?
     var phone: String?
     var isFavourite : Bool
-    
-//    var image: UIImage
-    
-    init(name: String, price: String, isFavourite: Bool) {
+    var gameImageURL : String?
+
+    init(name: String, price: String, isFavourite: Bool, gameImageURL: String?) {
         self.name = name
         self.price = price
         self.isFavourite = isFavourite
+        self.gameImageURL = gameImageURL
     }
     
-    init(name: String, price: String, isFavourite: Bool, city: String, phone: String) {
+    init(name: String, price: String, isFavourite: Bool, city: String, phone: String, gameImageURL: String?) {
         self.name = name
         self.price = price
         self.isFavourite = isFavourite
         self.city = city
         self.phone = phone
+        self.gameImageURL = gameImageURL
     }
     
 }

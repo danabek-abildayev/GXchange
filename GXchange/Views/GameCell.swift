@@ -14,7 +14,6 @@ class GameCell: UICollectionViewCell {
     
     var gameImage : UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "psn")
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         return imageView
@@ -62,6 +61,26 @@ class GameCell: UICollectionViewCell {
         name.frame = CGRect(x: 5, y: contentView.frame.height - 80, width: contentView.frame.width - 40, height: 50)
         favouriteButton.frame = CGRect(x: contentView.frame.width - 40, y: 5, width: 35, height: 30)
         price.frame = CGRect(x: 5, y: contentView.frame.height - 30, width: contentView.frame.width - 10, height: 20)
+    }
+    
+    func putGameImage (from urlString : String?) {
+        if urlString != nil {
+            print("Now downloading image with url \(urlString!)")
+            guard let url = URL(string: urlString!) else {
+                print("Unable to convert urlString from firestore to URL")
+                return
+            }
+            let session = URLSession(configuration: .default)
+            let task = session.dataTask(with: url) { (data, _, error) in
+                guard let data = data, error == nil else { return }
+                
+                DispatchQueue.main.async {
+                    self.gameImage.image = UIImage(data: data)
+//                    print("Game image should now change")
+                }
+            }
+            task.resume()
+        }
     }
     
 }

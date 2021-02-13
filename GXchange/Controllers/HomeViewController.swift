@@ -85,7 +85,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                         if let name = data["game"] as? String, let price = data["price"] as? String
                         {
                             let someBoolean = self.defaults.bool(forKey: name)
-                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean)
+                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean, gameImageURL: data["imageURL"] as? String)
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
@@ -138,6 +138,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         cell.name.text = psGames[indexPath.row].name
         cell.price.text = "\(psGames[indexPath.row].price) ₸"
+        
+        if let safeURL = psGames[indexPath.row].gameImageURL {
+            cell.putGameImage(from: safeURL)
+//            print("\(cell.name.text!) 's URL is \(safeURL)")
+        } else {
+            cell.gameImage.image = UIImage(named: "psn")
+        }
         
         cell.favouriteButton.tag = indexPath.row
         cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)

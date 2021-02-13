@@ -77,7 +77,7 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        guard let imageData = image.pngData() else {
+        guard let imageData = image.jpegData(compressionQuality: 0.01) else {
             print("Error. Couldn't convert image to PNG data")
             return
         }
@@ -90,7 +90,7 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
     }
     
     private func uploadImageToFirebase(data: Data) {
-        let ref = storage.child("images/file.png")
+        let ref = storage.child("images/\(UUID()).jpeg")
         //upload image to storage
         ref.putData(data, metadata: nil) { (_, error) in
             guard error == nil else {
