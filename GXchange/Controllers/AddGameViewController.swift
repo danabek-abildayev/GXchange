@@ -12,16 +12,17 @@ import Firebase
 class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let db = Firestore.firestore()
+    private let storage = Storage.storage().reference()
     
     private var name = UITextField()
     private var price = UITextField()
     private var image : UIImage! {
         didSet {
             imageButton.setImage(image, for: .normal)
-            imageData = image.pngData()
         }
     }
-    private var imageData : Data!
+    private var imageURL : String = ""
+   // private var imageData : Data!
     private var exchange : Bool!
     private var checkmark = UIButton()
     private var city = UITextField()
@@ -49,6 +50,7 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
                 "price" : price.text!,
                 "city" : city.text!,
                 "phone" : phone.text!,
+                "imageURL" : imageURL
             ])
             { [weak self] err in
                 guard let self = self else {return}
@@ -75,11 +77,36 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        guard let imageData = image.pngData() else {
+            print("Error. Couldn't convert image to PNG data")
+            return
+        }
+        uploadImageToFirebase(data: imageData)
         dismiss(animated: true)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
+    }
+    
+    private func uploadImageToFirebase(data: Data) {
+        let ref = storage.child("images/file.png")
+        //upload image to storage
+        ref.putData(data, metadata: nil) { (_, error) in
+            guard error == nil else {
+                print("Error. Couldn't upload data to storage")
+                return
+            }
+            print("Image uploaded to store successfully!")
+            //download stored image's URL
+            ref.downloadURL { [weak self] (url, error) in
+                guard let self = self else { return }
+                guard let url = url, error == nil else { return }
+                let urlString = url.absoluteString
+                print("Download URL for this image is: \(urlString)")
+                self.imageURL = urlString
+            }
+        }
     }
     
     func setItems() {
