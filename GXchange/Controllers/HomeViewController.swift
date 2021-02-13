@@ -119,7 +119,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         collectionView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
         
-        collectionView.frame = CGRect(x: 5, y: (navigationController?.navigationBar.frame.height)! + searchController.searchBar.frame.height + 35, width: view.frame.width - 10, height: view.frame.height - (navigationController?.navigationBar.frame.height)! - searchController.searchBar.frame.height - (tabBarController?.tabBar.frame.height)! - 35)
+        let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        let statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let navBarHeight = (navigationController?.navigationBar.frame.height)!
+        let tabBarHeight = (tabBarController?.tabBar.frame.height)!
+        
+        collectionView.frame = CGRect(x: 5, y: navBarHeight + searchController.searchBar.frame.height + statusBarHeight, width: view.frame.width - 10, height: view.frame.height - navBarHeight - searchController.searchBar.frame.height - tabBarHeight - statusBarHeight)
         view.addSubview(collectionView)
     }
     
@@ -140,11 +145,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if psGames[indexPath.row].isFavourite {
             cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
             defaults.setValue(true, forKey: cell.name.text!)
-            print("\(cell.name.text!) is Favourite")
+        //    print("\(cell.name.text!) is Favourite")
         } else {
             cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
             defaults.setValue(false, forKey: cell.name.text!)
-            print("\(cell.name.text!) is not favourite")
+        //    print("\(cell.name.text!) is not favourite")
         }
         
         return cell

@@ -25,7 +25,6 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         
         title = "Favourites"
         view.backgroundColor = .green
-//        navigationController?.navigationBar.barTintColor = .green
         setCollectionView()
         
         cv.dataSource = self
@@ -44,7 +43,12 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         layout.minimumInteritemSpacing = 1
         layout.itemSize = CGSize(width: view.frame.width - 10, height: view.frame.width/2)
         
-        cv = UICollectionView(frame: CGRect(x: 0, y: (navigationController?.navigationBar.frame.height)! + 25, width: view.bounds.width, height: view.bounds.height), collectionViewLayout: layout)
+        let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        let statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let navBarHeight = (navigationController?.navigationBar.frame.height)!
+        let tabBarHeight = (tabBarController?.tabBar.frame.height)!
+        
+        cv = UICollectionView(frame: CGRect(x: 0, y: navBarHeight + statusBarHeight + 5, width: view.bounds.width, height: view.bounds.height - navBarHeight - statusBarHeight - tabBarHeight - 5), collectionViewLayout: layout)
         cv.register(FavouriteGameCell.self, forCellWithReuseIdentifier: FavouriteGameCell.identifier)
         cv.backgroundColor = .clear
         cv.refreshControl = refreshControl
@@ -72,7 +76,7 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
                         if let name = data["game"] as? String, let price = data["price"] as? String, let city = data["city"] as? String, let phone = data["phone"] as? String
                         {
                             let isFavourite = self.defaults.bool(forKey: name)
-                            print("\(name) is indicated as \(isFavourite)")
+                        //    print("\(name) is indicated as \(isFavourite)")
                             if isFavourite {
                                 let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone)
                                 self.favouriteGames.append(newGame)
