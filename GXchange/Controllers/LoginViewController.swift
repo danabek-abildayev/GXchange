@@ -33,7 +33,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     print(e.localizedDescription)
                 } else {
                     DispatchQueue.main.async {
-                        let destinationVC = FavouritesViewController()
+                        let destinationVC = LoggedInViewController()
                         destinationVC.modalPresentationStyle = .fullScreen
                         self.navigationController?.pushViewController(destinationVC, animated: true)
                     }

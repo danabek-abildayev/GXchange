@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class TabBar: UITabBarController {
 
@@ -26,11 +27,19 @@ class TabBar: UITabBarController {
         let secondVC = UINavigationController(rootViewController: FavouritesViewController())
         secondVC.tabBarItem.image = UIImage(systemName: "heart")
         secondVC.tabBarItem.title = "Favourites"
-        let thirdVC = UINavigationController(rootViewController: ProfileViewController())
+        let thirdVC = UINavigationController(rootViewController: (userLoggedIn() ? LoggedInViewController() : ProfileViewController()))
         thirdVC.tabBarItem.image = UIImage(systemName: "person")
         thirdVC.tabBarItem.title = "Profile"
         
         setViewControllers([firstVC, secondVC, thirdVC], animated: true)
+    }
+    
+    private func userLoggedIn() -> Bool {
+        if Auth.auth().currentUser != nil {
+            return true
+        } else {
+            return false
+        }
     }
 
 }
