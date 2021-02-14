@@ -22,6 +22,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     let db = Firestore.firestore()
     private var psGames = [GameModel]()
     
+    private var filteredGamesArray : [GameModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -65,12 +67,6 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         
     }
     
-    private func setSearchBar() {
-        searchController.searchBar.delegate = self
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-    }
-    
     private func reloadGames() {
         
         db.collection("psGames").order(by: "game", descending: false).addSnapshotListener { [weak self] (querySnapshot, err) in
@@ -89,6 +85,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
+                                self.filteredGamesArray = self.psGames
                                 self.collectionView.reloadData()
                             }
                         }
@@ -96,7 +93,38 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                 }
             }
         }
+    }
+    
+    //MARK: - Search Bar methods
         
+    private func setSearchBar() {
+        searchController.searchBar.delegate = self
+        searchController.searchBar.returnKeyType = .done
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText == "" {
+            filteredGamesArray = psGames
+            view.endEditing(true)
+            collectionView.reloadData()
+        } else {
+            filteredGamesArray = []
+            
+            for gameModel in psGames {
+                if gameModel.name.lowercased().contains(searchText.lowercased()) {
+                    filteredGamesArray.append(gameModel)
+                }
+            }
+            collectionView.reloadData()
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        filteredGamesArray = psGames
+        collectionView.reloadData()
     }
     
 }
@@ -129,24 +157,24 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return psGames.count
+        return filteredGamesArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCell.identifier, for: indexPath) as! GameCell
         
-        cell.name.text = psGames[indexPath.row].name
-        cell.price.text = "\(psGames[indexPath.row].price) ₸"
+        cell.name.text = filteredGamesArray[indexPath.row].name
+        cell.price.text = "\(filteredGamesArray[indexPath.row].price) ₸"
         
-        if let safeURL = psGames[indexPath.row].gameImageURL {
+        if let safeURL = filteredGamesArray[indexPath.row].gameImageURL {
             cell.putGameImage(from: safeURL)
 //            print("\(cell.name.text!) 's URL is \(safeURL)")
         } else {
             cell.gameImage.image = UIImage(named: "psn")
         }
         
-        if psGames[indexPath.row].exchangeable {
+        if filteredGamesArray[indexPath.row].exchangeable {
             cell.checkboxImage.image = UIImage(named: "yes")
         } else {
             cell.checkboxImage.image = UIImage(named: "no")
@@ -155,7 +183,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         cell.favouriteButton.tag = indexPath.row
         cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
         
-        if psGames[indexPath.row].isFavourite {
+        if filteredGamesArray[indexPath.row].isFavourite {
             cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
             defaults.setValue(true, forKey: cell.name.text!)
         //    print("\(cell.name.text!) is Favourite")
@@ -171,7 +199,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     @objc private func heartPressed (sender: UIButton!) {
         
-        psGames[sender.tag].isFavourite = !psGames[sender.tag].isFavourite
+        filteredGamesArray[sender.tag].isFavourite = !filteredGamesArray[sender.tag].isFavourite
         
         collectionView.reloadData()
     }
