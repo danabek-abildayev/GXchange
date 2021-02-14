@@ -18,21 +18,24 @@ struct GameModel {
     var phone: String?
     var isFavourite : Bool
     var gameImageURL : String?
+    var exchangeable : Bool
 
-    init(name: String, price: String, isFavourite: Bool, gameImageURL: String?) {
+    init(name: String, price: String, isFavourite: Bool, gameImageURL: String?, exchangeable: Bool) {
         self.name = name
         self.price = price
         self.isFavourite = isFavourite
         self.gameImageURL = gameImageURL
+        self.exchangeable = exchangeable
     }
     
-    init(name: String, price: String, isFavourite: Bool, city: String, phone: String, gameImageURL: String?) {
+    init(name: String, price: String, isFavourite: Bool, city: String, phone: String, gameImageURL: String?, exchangeable: Bool) {
         self.name = name
         self.price = price
         self.isFavourite = isFavourite
         self.city = city
         self.phone = phone
         self.gameImageURL = gameImageURL
+        self.exchangeable = exchangeable
     }
     
 }

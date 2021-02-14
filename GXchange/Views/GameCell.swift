@@ -35,12 +35,20 @@ class GameCell: UICollectionViewCell {
     
     let favouriteButton = UIButton()
     
+    let checkboxImage : UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         contentView.addSubview(gameImage)
         contentView.addSubview(name)
         contentView.addSubview(price)
+        contentView.addSubview(checkboxImage)
         contentView.backgroundColor = #colorLiteral(red: 0.6719968021, green: 0.9254902005, blue: 0.8990939033, alpha: 1)
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
@@ -60,7 +68,8 @@ class GameCell: UICollectionViewCell {
         gameImage.frame = CGRect(x: 0, y: 0, width: contentView.frame.width, height: contentView.frame.height - 80)
         name.frame = CGRect(x: 5, y: contentView.frame.height - 80, width: contentView.frame.width - 40, height: 50)
         favouriteButton.frame = CGRect(x: contentView.frame.width - 40, y: 5, width: 35, height: 30)
-        price.frame = CGRect(x: 5, y: contentView.frame.height - 30, width: contentView.frame.width - 10, height: 20)
+        price.frame = CGRect(x: 5, y: contentView.frame.height - 30, width: contentView.frame.width - 50, height: 20)
+        checkboxImage.frame = CGRect(x: 90, y: contentView.frame.height - 30, width: 20, height: 20)
     }
     
     func putGameImage (from urlString : String?) {

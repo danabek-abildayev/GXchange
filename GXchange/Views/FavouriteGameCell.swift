@@ -48,6 +48,20 @@ class FavouriteGameCell : UICollectionViewCell {
         return phone
     }()
     
+    var exchangeLabel : UILabel = {
+        let exchangeLabel = UILabel()
+        exchangeLabel.text = "Exchangeable:"
+        exchangeLabel.font = .systemFont(ofSize: 19)
+        return exchangeLabel
+    }()
+    
+    let checkboxImage : UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
     let favouriteButton = UIButton()
     
     override init(frame: CGRect) {
@@ -58,6 +72,8 @@ class FavouriteGameCell : UICollectionViewCell {
         contentView.addSubview(price)
         contentView.addSubview(city)
         contentView.addSubview(phone)
+        contentView.addSubview(exchangeLabel)
+        contentView.addSubview(checkboxImage)
         contentView.backgroundColor = #colorLiteral(red: 0.6719968021, green: 0.9254902005, blue: 0.8990939033, alpha: 1)
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
@@ -79,7 +95,9 @@ class FavouriteGameCell : UICollectionViewCell {
         favouriteButton.frame = CGRect(x: contentView.frame.width - 40, y: 10, width: 35, height: 30)
         price.frame = CGRect(x: contentView.frame.width/2 + 10, y: 60, width: contentView.frame.width/2 - 10, height: 20)
         city.frame = CGRect(x: contentView.frame.width/2 + 10, y: 85, width: contentView.frame.width/2 - 10, height: 20)
-        phone.frame = CGRect(x: contentView.frame.width/2 + 10, y: 115, width: contentView.frame.width/2 - 10, height: 20)
+        phone.frame = CGRect(x: contentView.frame.width/2 + 10, y: 112, width: contentView.frame.width/2 - 10, height: 20)
+        exchangeLabel.frame = CGRect(x: contentView.frame.width/2 + 10, y: 139, width: contentView.frame.width/2 - 10, height: 20)
+        checkboxImage.frame = CGRect(x: contentView.frame.width - 40, y: 139, width: 20, height: 20)
     }
     
     func putGameImage (from urlString : String?) {

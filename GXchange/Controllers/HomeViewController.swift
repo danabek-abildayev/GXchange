@@ -82,10 +82,10 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                 if let snapshotDocuments = querySnapshot?.documents {
                     for doc in snapshotDocuments {
                         let data = doc.data()
-                        if let name = data["game"] as? String, let price = data["price"] as? String
+                        if let name = data["game"] as? String, let price = data["price"] as? String, let exchangeable = data["exchangeable"] as? Bool
                         {
                             let someBoolean = self.defaults.bool(forKey: name)
-                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean, gameImageURL: data["imageURL"] as? String)
+                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean, gameImageURL: data["imageURL"] as? String, exchangeable: exchangeable)
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
@@ -144,6 +144,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 //            print("\(cell.name.text!) 's URL is \(safeURL)")
         } else {
             cell.gameImage.image = UIImage(named: "psn")
+        }
+        
+        if psGames[indexPath.row].exchangeable {
+            cell.checkboxImage.image = UIImage(named: "yes")
+        } else {
+            cell.checkboxImage.image = UIImage(named: "no")
         }
         
         cell.favouriteButton.tag = indexPath.row

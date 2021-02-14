@@ -73,12 +73,12 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
                 if let snapshotDocuments = querySnapshot?.documents {
                     for doc in snapshotDocuments {
                         let data = doc.data()
-                        if let name = data["game"] as? String, let price = data["price"] as? String, let city = data["city"] as? String, let phone = data["phone"] as? String
+                        if let name = data["game"] as? String, let price = data["price"] as? String, let city = data["city"] as? String, let phone = data["phone"] as? String, let exchangeable = data["exchangeable"] as? Bool
                         {
                             let isFavourite = self.defaults.bool(forKey: name)
                         //    print("\(name) is indicated as \(isFavourite)")
                             if isFavourite {
-                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone, gameImageURL: data["imageURL"] as? String)
+                                let newGame = GameModel(name: name, price: price, isFavourite: isFavourite, city: city, phone: phone, gameImageURL: data["imageURL"] as? String, exchangeable: exchangeable)
                                 self.favouriteGames.append(newGame)
                             }
                             DispatchQueue.main.async {
@@ -113,6 +113,12 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
 //            print("\(cell.name.text!) 's URL is \(safeURL)")
         } else {
             cell.gameImage.image = UIImage(named: "psn")
+        }
+        
+        if favouriteGames[indexPath.row].exchangeable {
+            cell.checkboxImage.image = UIImage(named: "yes")
+        } else {
+            cell.checkboxImage.image = UIImage(named: "no")
         }
         
         cell.favouriteButton.tag = indexPath.row

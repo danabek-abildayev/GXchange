@@ -22,9 +22,17 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
         }
     }
     private var imageURL : String = ""
-   // private var imageData : Data!
-    private var exchange : Bool!
-    private var checkmark = UIButton()
+    private let exchangeLabel = UILabel()
+    private var exchangeable : Bool = false {
+        didSet {
+            if exchangeable {
+                checkbox.setBackgroundImage(UIImage(named: "yes"), for: .normal)
+            } else {
+                checkbox.setBackgroundImage(UIImage(named: "no"), for: .normal)
+            }
+        }
+    }
+    private var checkbox = UIButton()
     private var city = UITextField()
     private var phone = UITextField()
     private var imageButton = UIButton()
@@ -64,7 +72,8 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
                 "price" : price.text!,
                 "city" : city.text!,
                 "phone" : phone.text!,
-                "imageURL" : imageURL
+                "imageURL" : imageURL,
+                "exchangeable" : exchangeable
             ])
             { [weak self] err in
                 guard let self = self else {return}
@@ -123,6 +132,10 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
         }
     }
     
+    @objc private func checkboxTapped() {
+        exchangeable = !exchangeable
+    }
+    
     func setItems() {
         
         view.backgroundColor = UIColor(red: 0.46, green: 0.47, blue: 0.91, alpha: 1.00)
@@ -146,17 +159,22 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
         addButton.backgroundColor = .systemOrange
         addButton.addTarget(self, action: #selector(addGame), for: .touchUpInside)
         
+        exchangeLabel.text = "Exchangeable?"
+        exchangeLabel.textColor = .white
+        exchangeLabel.font = .boldSystemFont(ofSize: 18)
         
-        //
-        //        let horizSV = UIStackView(arrangedSubviews: [image, imageButton])
-        //        horizSV.axis = .horizontal
-        //        horizSV.alignment = .center
-        //        horizSV.spacing = 20
-        //        horizSV.distribution = .equalSpacing
-        //        horizSV.translatesAutoresizingMaskIntoConstraints = false
+        checkbox.setBackgroundImage(UIImage(named: "no"), for: .normal)
+        checkbox.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
+        checkbox.clipsToBounds = true
         
+        let horizSV = UIStackView(arrangedSubviews: [exchangeLabel, checkbox])
+        horizSV.axis = .horizontal
+        horizSV.alignment = .center
+        horizSV.spacing = 20
+        horizSV.distribution = .equalSpacing
+        horizSV.translatesAutoresizingMaskIntoConstraints = false
         
-        let firstSV = UIStackView(arrangedSubviews: [imageButton, name, price, city, phone, addButton])
+        let firstSV = UIStackView(arrangedSubviews: [imageButton, name, price, horizSV, city, phone, addButton])
         firstSV.axis = .vertical
         firstSV.alignment = .center
         firstSV.distribution = .equalSpacing
@@ -171,6 +189,8 @@ class AddGameViewController: UIViewController, UITextFieldDelegate, UIImagePicke
                                      imageButton.heightAnchor.constraint(equalToConstant: 150),
                                      addButton.widthAnchor.constraint(equalToConstant: 120),
                                      addButton.heightAnchor.constraint(equalToConstant: 40),
+                                     checkbox.widthAnchor.constraint(equalToConstant: 20),
+                                     checkbox.heightAnchor.constraint(equalToConstant: 20)
                                      
                                      
         ])
