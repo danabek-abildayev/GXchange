@@ -22,7 +22,12 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     let db = Firestore.firestore()
     private var psGames = [GameModel]()
     
-    private var filteredGamesArray : [GameModel] = []
+    private var filteredArray : [GameModel] = []
+    
+    private var isSearching: Bool = false
+    private var showOnlyExchangeables : Bool? = nil
+    
+    private var doubleFilteredArray : [GameModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,8 +55,9 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                 
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: image)]
         
+        let filterButton = UIBarButtonItem.init(title: "Filter", style: .plain, target: self, action: #selector(filterTapped))
         let addItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addGame))
-        navigationItem.rightBarButtonItem = addItem
+        navigationItem.rightBarButtonItems = [addItem, filterButton]
     }
     
     @objc private func addGame () {
@@ -65,6 +71,28 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
             present(alert, animated: true)
         }
         
+    }
+    
+    @objc func filterTapped () {
+        
+        let alertVC = UIAlertController(title: "Please choose", message: "Please choose whether you want exchangeable games or not", preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] (action) in
+            guard let self = self else {return}
+            self.showOnlyExchangeables = true
+            self.collectionView.reloadData()
+        }))
+        alertVC.addAction(UIAlertAction(title: "No", style: .default, handler: { [weak self] (action) in
+            guard let self = self else {return}
+            self.showOnlyExchangeables = false
+            self.collectionView.reloadData()
+        }))
+        alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] (action) in
+            guard let self = self else {return}
+            self.filteredArray = self.psGames
+            self.showOnlyExchangeables = nil
+            self.collectionView.reloadData()
+        }))
+        present(alertVC, animated: true)
     }
     
     private func reloadGames() {
@@ -85,7 +113,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
-                                self.filteredGamesArray = self.psGames
+                                self.filteredArray = self.psGames
                                 self.collectionView.reloadData()
                             }
                         }
@@ -107,15 +135,17 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         if searchText == "" {
-            filteredGamesArray = psGames
+            isSearching = false
+            filteredArray = psGames
             view.endEditing(true)
             collectionView.reloadData()
         } else {
-            filteredGamesArray = []
+            isSearching = true
+            filteredArray = []
             
             for gameModel in psGames {
                 if gameModel.name.lowercased().contains(searchText.lowercased()) {
-                    filteredGamesArray.append(gameModel)
+                    filteredArray.append(gameModel)
                 }
             }
             collectionView.reloadData()
@@ -123,7 +153,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        filteredGamesArray = psGames
+        isSearching = false
+        filteredArray = psGames
         collectionView.reloadData()
     }
     
@@ -157,49 +188,128 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredGamesArray.count
+        
+        if showOnlyExchangeables != nil {
+            if isSearching {
+                doubleFilteredArray = []
+                for gameModel in filteredArray {
+                    if gameModel.exchangeable == showOnlyExchangeables {
+                        doubleFilteredArray.append(gameModel)
+                    }
+                }
+                return doubleFilteredArray.count
+            } else {
+                filteredArray = []
+                for gameModel in psGames {
+                    if gameModel.exchangeable == showOnlyExchangeables {
+                        filteredArray.append(gameModel)
+                    }
+                }
+                return filteredArray.count
+            }
+        } else {
+            return filteredArray.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCell.identifier, for: indexPath) as! GameCell
         
-        cell.name.text = filteredGamesArray[indexPath.row].name
-        cell.price.text = "\(filteredGamesArray[indexPath.row].price) ₸"
-        
-        if let safeURL = filteredGamesArray[indexPath.row].gameImageURL {
-            cell.putGameImage(from: safeURL)
-//            print("\(cell.name.text!) 's URL is \(safeURL)")
-        } else {
-            cell.gameImage.image = UIImage(named: "psn")
+        if showOnlyExchangeables != nil {
+            if isSearching {
+                doubleFilteredArray = []
+                for gameModel in filteredArray {
+                    if gameModel.exchangeable == showOnlyExchangeables {
+                        doubleFilteredArray.append(gameModel)
+                    }
+                }
+            } else {
+                filteredArray = []
+                for gameModel in psGames {
+                    if gameModel.exchangeable == showOnlyExchangeables {
+                        filteredArray.append(gameModel)
+                    }
+                }
+            }
         }
         
-        if filteredGamesArray[indexPath.row].exchangeable {
-            cell.checkboxImage.image = UIImage(named: "yes")
+        if isSearching && showOnlyExchangeables != nil {
+            
+            cell.name.text = doubleFilteredArray[indexPath.row].name
+            cell.price.text = "\(doubleFilteredArray[indexPath.row].price) ₸"
+            
+            if let safeURL = doubleFilteredArray[indexPath.row].gameImageURL {
+                cell.putGameImage(from: safeURL)
+    //            print("\(cell.name.text!) 's URL is \(safeURL)")
+            } else {
+                cell.gameImage.image = UIImage(named: "psn")
+            }
+            
+            if doubleFilteredArray[indexPath.row].exchangeable {
+                cell.checkboxImage.image = UIImage(named: "yes")
+            } else {
+                cell.checkboxImage.image = UIImage(named: "no")
+            }
+            
+            cell.favouriteButton.tag = indexPath.row
+            cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
+            
+            if doubleFilteredArray[indexPath.row].isFavourite {
+                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+                defaults.setValue(true, forKey: cell.name.text!)
+            //    print("\(cell.name.text!) is Favourite")
+            } else {
+                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+                defaults.setValue(false, forKey: cell.name.text!)
+            //    print("\(cell.name.text!) is not favourite")
+            }
+            
         } else {
-            cell.checkboxImage.image = UIImage(named: "no")
+            
+            cell.name.text = filteredArray[indexPath.row].name
+            cell.price.text = "\(filteredArray[indexPath.row].price) ₸"
+            
+            if let safeURL = filteredArray[indexPath.row].gameImageURL {
+                cell.putGameImage(from: safeURL)
+    //            print("\(cell.name.text!) 's URL is \(safeURL)")
+            } else {
+                cell.gameImage.image = UIImage(named: "psn")
+            }
+            
+            if filteredArray[indexPath.row].exchangeable {
+                cell.checkboxImage.image = UIImage(named: "yes")
+            } else {
+                cell.checkboxImage.image = UIImage(named: "no")
+            }
+            
+            cell.favouriteButton.tag = indexPath.row
+            cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
+            
+            if filteredArray[indexPath.row].isFavourite {
+                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+                defaults.setValue(true, forKey: cell.name.text!)
+            //    print("\(cell.name.text!) is Favourite")
+            } else {
+                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+                defaults.setValue(false, forKey: cell.name.text!)
+            //    print("\(cell.name.text!) is not favourite")
+            }
+            
         }
-        
-        cell.favouriteButton.tag = indexPath.row
-        cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
-        
-        if filteredGamesArray[indexPath.row].isFavourite {
-            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-            defaults.setValue(true, forKey: cell.name.text!)
-        //    print("\(cell.name.text!) is Favourite")
-        } else {
-            cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-            defaults.setValue(false, forKey: cell.name.text!)
-        //    print("\(cell.name.text!) is not favourite")
-        }
-        
+                
         return cell
     }
     
     
     @objc private func heartPressed (sender: UIButton!) {
         
-        filteredGamesArray[sender.tag].isFavourite = !filteredGamesArray[sender.tag].isFavourite
+        if isSearching && showOnlyExchangeables != nil {
+            doubleFilteredArray[sender.tag].isFavourite = !doubleFilteredArray[sender.tag].isFavourite
+        } else {
+            filteredArray[sender.tag].isFavourite = !filteredArray[sender.tag].isFavourite
+        }
+        
         
         collectionView.reloadData()
     }
