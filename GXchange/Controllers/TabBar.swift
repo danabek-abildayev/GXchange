@@ -15,31 +15,32 @@ class TabBar: UITabBarController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        setupVCs()
-        
-    }
-    
-    func setupVCs() {
-        
+                
         let firstVC = UINavigationController(rootViewController: HomeViewController())
         firstVC.tabBarItem.image = UIImage(systemName: "house")
         let secondVC = UINavigationController(rootViewController: FavouritesViewController())
         secondVC.tabBarItem.image = UIImage(systemName: "heart")
         secondVC.tabBarItem.title = "Favourites"
-        let thirdVC = UINavigationController(rootViewController: (userLoggedIn() ? LoggedInViewController() : ProfileViewController()))
-        thirdVC.tabBarItem.image = UIImage(systemName: "person")
-        thirdVC.tabBarItem.title = "Profile"
         
-        setViewControllers([firstVC, secondVC, thirdVC], animated: true)
-    }
-    
-    private func userLoggedIn() -> Bool {
-        if Auth.auth().currentUser != nil {
-            return true
-        } else {
-            return false
+        Auth.auth().addStateDidChangeListener { [weak self] (auth, user) in
+            guard let self = self else {return}
+            if user != nil {
+                print("User is logged in")
+                let thirdVC = UINavigationController(rootViewController: (LoggedInViewController()))
+                thirdVC.tabBarItem.image = UIImage(systemName: "person")
+                thirdVC.tabBarItem.title = "Profile"
+                
+                self.setViewControllers([firstVC, secondVC, thirdVC], animated: false)
+            } else {
+                print("User is NOT logged in")
+                let thirdVC = UINavigationController(rootViewController: (ProfileViewController()))
+                thirdVC.tabBarItem.image = UIImage(systemName: "person")
+                thirdVC.tabBarItem.title = "Profile"
+                
+                self.setViewControllers([firstVC, secondVC, thirdVC], animated: false)
+            }
         }
+        
     }
 
 }

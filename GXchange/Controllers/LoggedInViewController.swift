@@ -13,6 +13,8 @@ class LoggedInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Profile"
+        
         view.backgroundColor = .systemTeal
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         label.text = "Congratulations! \nYou have successfully logged in."
