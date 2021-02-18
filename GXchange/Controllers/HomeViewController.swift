@@ -38,9 +38,6 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
         setNavBarItems()
         setSearchBar()
         setCollectionView()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
         reloadGames()
     }
     
@@ -309,7 +306,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         } else {
             filteredArray[sender.tag].isFavourite = !filteredArray[sender.tag].isFavourite
         }
-        
         
         collectionView.reloadData()
     }
