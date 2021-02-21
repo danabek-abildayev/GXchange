@@ -103,10 +103,10 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
                 if let snapshotDocuments = querySnapshot?.documents {
                     for doc in snapshotDocuments {
                         let data = doc.data()
-                        if let name = data["game"] as? String, let price = data["price"] as? String, let exchangeable = data["exchangeable"] as? Bool
+                        if let name = data["game"] as? String, let price = data["price"] as? String, let city = data["city"] as? String, let phone = data["phone"] as? String, let exchangeable = data["exchangeable"] as? Bool
                         {
                             let someBoolean = self.defaults.bool(forKey: name)
-                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean, gameImageURL: data["imageURL"] as? String, exchangeable: exchangeable)
+                            let newGame = GameModel(name: name, price: price, isFavourite: someBoolean, city: city, phone: phone, gameImageURL: data["imageURL"] as? String, exchangeable: exchangeable)
                             self.psGames.append(newGame)
                             
                             DispatchQueue.main.async {
@@ -249,19 +249,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 cell.checkboxImage.image = UIImage(named: "no")
             }
             
-            cell.favouriteButton.tag = indexPath.row
-            cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
-            
-            if doubleFilteredArray[indexPath.row].isFavourite {
-                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-                defaults.setValue(true, forKey: cell.name.text!)
-            //    print("\(cell.name.text!) is Favourite")
-            } else {
-                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-                defaults.setValue(false, forKey: cell.name.text!)
-            //    print("\(cell.name.text!) is not favourite")
-            }
-            
         } else {
             
             cell.name.text = filteredArray[indexPath.row].name
@@ -280,34 +267,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 cell.checkboxImage.image = UIImage(named: "no")
             }
             
-            cell.favouriteButton.tag = indexPath.row
-            cell.favouriteButton.addTarget(self, action: #selector(heartPressed(sender:)), for: .touchUpInside)
-            
-            if filteredArray[indexPath.row].isFavourite {
-                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-                defaults.setValue(true, forKey: cell.name.text!)
-            //    print("\(cell.name.text!) is Favourite")
-            } else {
-                cell.favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-                defaults.setValue(false, forKey: cell.name.text!)
-            //    print("\(cell.name.text!) is not favourite")
-            }
-            
         }
                 
         return cell
-    }
-    
-    
-    @objc private func heartPressed (sender: UIButton!) {
-        
-        if isSearching && showOnlyExchangeables != nil {
-            doubleFilteredArray[sender.tag].isFavourite = !doubleFilteredArray[sender.tag].isFavourite
-        } else {
-            filteredArray[sender.tag].isFavourite = !filteredArray[sender.tag].isFavourite
-        }
-        
-        collectionView.reloadData()
     }
     
     @objc private func refreshPage () {
@@ -315,6 +277,15 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         refreshControl.endRefreshing()
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if isSearching && showOnlyExchangeables != nil {
+            let destVC = SingleGameViewController(chosenGame: doubleFilteredArray[indexPath.row])
+            navigationController?.pushViewController(destVC, animated: true)
+        } else {
+            let destVC = SingleGameViewController(chosenGame: filteredArray[indexPath.row])
+            navigationController?.pushViewController(destVC, animated: true)
+        }
+    }
     
 }

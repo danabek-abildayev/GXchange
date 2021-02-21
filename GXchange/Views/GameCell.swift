@@ -32,9 +32,7 @@ class GameCell: UICollectionViewCell {
         price.font = .systemFont(ofSize: 19)
         return price
     }()
-    
-    let favouriteButton = UIButton()
-    
+        
     let checkboxImage : UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -53,9 +51,6 @@ class GameCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
         
-        favouriteButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-        contentView.addSubview(favouriteButton)
-        
     }
         
     required init?(coder: NSCoder) {
@@ -67,7 +62,6 @@ class GameCell: UICollectionViewCell {
         
         gameImage.frame = CGRect(x: 0, y: 0, width: contentView.frame.width, height: contentView.frame.height - 80)
         name.frame = CGRect(x: 5, y: contentView.frame.height - 80, width: contentView.frame.width - 40, height: 50)
-        favouriteButton.frame = CGRect(x: contentView.frame.width - 40, y: 5, width: 35, height: 30)
         price.frame = CGRect(x: 5, y: contentView.frame.height - 30, width: contentView.frame.width - 50, height: 20)
         checkboxImage.frame = CGRect(x: 90, y: contentView.frame.height - 30, width: 20, height: 20)
     }
