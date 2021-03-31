@@ -111,8 +111,6 @@ class FavouritesViewController: UIViewController, UICollectionViewDataSource, UI
         if let safeURL = favouriteGames[indexPath.row].gameImageURL {
             cell.putGameImage(from: safeURL)
 //            print("\(cell.name.text!) 's URL is \(safeURL)")
-        } else {
-            cell.gameImage.image = UIImage(named: "psn")
         }
         
         if favouriteGames[indexPath.row].exchangeable {

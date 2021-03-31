@@ -72,18 +72,18 @@ class HomeViewController: UIViewController, UISearchBarDelegate {
     
     @objc func filterTapped () {
         
-        let alertVC = UIAlertController(title: "Please choose", message: "Please choose whether you want exchangeable games or not", preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] (action) in
+        let alertVC = UIAlertController(title: "Please choose", message: "Do you want to see only exchangeable games?", preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "Only exchangeable games", style: .default, handler: { [weak self] (action) in
             guard let self = self else {return}
             self.showOnlyExchangeables = true
             self.collectionView.reloadData()
         }))
-        alertVC.addAction(UIAlertAction(title: "No", style: .default, handler: { [weak self] (action) in
+        alertVC.addAction(UIAlertAction(title: "Only non-exchangeable games", style: .default, handler: { [weak self] (action) in
             guard let self = self else {return}
             self.showOnlyExchangeables = false
             self.collectionView.reloadData()
         }))
-        alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] (action) in
+        alertVC.addAction(UIAlertAction(title: "Reset", style: .cancel, handler: { [weak self] (action) in
             guard let self = self else {return}
             self.filteredArray = self.psGames
             self.showOnlyExchangeables = nil
@@ -239,8 +239,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             if let safeURL = doubleFilteredArray[indexPath.row].gameImageURL {
                 cell.putGameImage(from: safeURL)
     //            print("\(cell.name.text!) 's URL is \(safeURL)")
-            } else {
-                cell.gameImage.image = UIImage(named: "psn")
             }
             
             if doubleFilteredArray[indexPath.row].exchangeable {
@@ -257,8 +255,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             if let safeURL = filteredArray[indexPath.row].gameImageURL {
                 cell.putGameImage(from: safeURL)
     //            print("\(cell.name.text!) 's URL is \(safeURL)")
-            } else {
-                cell.gameImage.image = UIImage(named: "psn")
             }
             
             if filteredArray[indexPath.row].exchangeable {

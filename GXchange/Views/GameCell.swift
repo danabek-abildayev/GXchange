@@ -67,7 +67,7 @@ class GameCell: UICollectionViewCell {
     }
     
     func putGameImage (from urlString : String?) {
-        if urlString != nil {
+        if urlString != "" {
             gameImage.image = UIImage(named: "loading")
 //            print("Now downloading image with url \(urlString!)")
             guard let url = URL(string: urlString!) else {
@@ -84,6 +84,8 @@ class GameCell: UICollectionViewCell {
                 }
             }
             task.resume()
+        } else {
+            gameImage.image = UIImage(named: "psn")
         }
     }
     
